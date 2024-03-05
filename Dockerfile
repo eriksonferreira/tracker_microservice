@@ -17,7 +17,7 @@ EXPOSE 8080
 # Define environment variable for API endpoint
 # Use 'host.docker.internal' to refer to the host machine in Docker for Windows/Mac.
 # For Linux, you may need to use the host's IP address directly or configure the network.
-ENV API_HOST=10.128.0.16
+ENV API_HOST="https://price-tracker-ugjo2rw7cq-uc.a.run.app/"
 
 # Run main.py when the container launches
 CMD ["python", "-u", "main.py"]
