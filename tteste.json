@@ -1,0 +1,14 @@
+{
+    "data": {
+        "products": {
+            "total_count": 2000,
+            "items": [],
+            "page_info": {
+                "total_pages": 1,
+                "current_page": 1,
+                "__typename": "SearchResultPageInfo"
+            },
+            "__typename": "Products"
+        }
+    }
+}

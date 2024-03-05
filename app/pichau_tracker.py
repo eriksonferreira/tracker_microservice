@@ -1,15 +1,24 @@
-import requests
-from bs4 import BeautifulSoup
-import requests
 import time
 import re
 import random
 import cloudscraper
+import brotli
+import json
+import requests
+
 class Pichau():
     
     def __init__(self, connector):
-        store = connector.get_store_track_url(2)
-        self.track_url = store['base_url']
+        store = None
+        try:
+            print('Buscando base URL')
+            store = connector.get_store_track_url(2)
+            self.track_url = store['base_url']
+        except:
+            print('Erro ao buscar base URL')
+            self.track_url = "https://www.pichau.com.br/api/pichau/"
+            pass
+        
 
     
     def extrair_itens(self, product):
@@ -17,6 +26,7 @@ class Pichau():
         # print(product)
         string = product['name']
         match = re.match(r'Placa de V[íi]deo', string, re.IGNORECASE)
+        
         
         if match:
             # Extrai o termo "Placa de Video"
@@ -49,12 +59,11 @@ class Pichau():
                 'memory_type': final[4],
                 'memory_bus': final[5],
                 'sku': final[6],
-                'previous_price': product['previous_price'],
                 'discount_price': product['discount_price'],
                 'credit_price': product['credit_price'],
-                'credit_info': product['credit_info'],
                 'link': product['link'],
-                'image': "not_implemented"
+                'image': product['image'],
+                'store_id': 2
             }
             return final_dict
         else:
@@ -78,53 +87,85 @@ class Pichau():
                 'memory_type': final[3],
                 'memory_bus': final[4],
                 'sku': final[5],
-                'previous_price': product['previous_price'],
                 'discount_price': product['discount_price'],
                 'credit_price': product['credit_price'],
-                'credit_info': product['credit_info'],
                 'link': product['link'],
-                'image': "not_implemented"
+                'image':  product['image'],
+                'store_id': 2
             }
 
 
     def get_products(self, page=1):
+        body = {
+            "query" : "query GetCategoryAndAggregationsProducts($search: String, $filter: ProductAttributeFilterInput, $pageSize: Int!, $currentPage: Int!, $sort: ProductAttributeSortInput) {\n  products(\n    search: $search\n    filter: $filter\n    pageSize: $pageSize\n    currentPage: $currentPage\n    sort: $sort\n  ) {\n    total_count\n    page_info {\n      current_page\n      page_size\n      total_pages\n      __typename\n    }\n    items {\n      ...ProductItem\n      __typename\n    }\n    aggregations {\n      ...Aggregation\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment ProductItem on ProductInterface {\n  id\n  name\n  sku\n  stock_status\n  __typename\n  url_key\n  informacoes_adicionais\n  product_page_layout\n  garantia\n  only_x_left_in_stock\n  amasty_label {\n    id\n    name\n    product_labels {\n      image\n      label\n      position\n      size\n      __typename\n    }\n    __typename\n  }\n  description {\n    html\n    __typename\n  }\n  small_image {\n    url\n    path\n    __typename\n  }\n  image {\n    url\n    path\n    __typename\n  }\n  media_gallery {\n    disabled\n    label\n    position\n    url\n    __typename\n  }\n  mysales_promotion {\n    expire_at\n    qty_available\n    qty_sold\n    price_discount\n    __typename\n  }\n  special_price\n  price_range {\n    minimum_price {\n      discount {\n        amount_off\n        percent_off\n        __typename\n      }\n      final_price {\n        currency\n        value\n        __typename\n      }\n      regular_price {\n        currency\n        value\n        __typename\n      }\n      __typename\n    }\n    maximum_price {\n      discount {\n        amount_off\n        percent_off\n        __typename\n      }\n      final_price {\n        currency\n        value\n        __typename\n      }\n      regular_price {\n        currency\n        value\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment Aggregation on Aggregation {\n  count\n  label\n  attribute_code\n  options {\n    count\n    label\n    value\n    __typename\n  }\n  __typename\n}",
+            "variables" : {
+                "search" : "rtx 4080",
+                "filter" : {
+                "forca" : {
+                    "in" : [
+                    "366"
+                    ]
+                },
+                "placadevideo" : {
+                    "in" : [
+                    "130"
+                    ]
+                },
+                "hide_from_search" : {
+                    "eq" : "0"
+                },
+                "category_id" : {
+                    "eq" : "2"
+                }
+                },
+                "pageSize" : 100,
+                "currentPage" : 1,
+                "sort" : {
+                "price" : "DESC"
+                }
+            },
+            "operationName" : "GetCategoryAndAggregationsProducts"
+            }
+        headers = {
+            'Host': 'www.pichau.com.br',
+            'vendor': 'Pichau',
+            'Accept': '*/*',
+            'Content-Type': 'application/json',
+            'User-Agent': 'PichauMobile/67 CFNetwork/1490.0.4 Darwin/23.2.0',
+            'Accept-Language': 'pt-BR,pt;q=0.9',
+            'Authorization': '',
+            'Content-Length': '2310',
+            'Accept-Encoding': 'gzip, deflate, br'
+        }
         while True:  # Loop infinito para continuar tentando até encontrar produtos
-            scraper = cloudscraper.create_scraper(
-                browser={
-                    'browser': 'firefox',
-                    'platform': 'windows',
-                    'mobile': False
-                }, delay=10)
-            page_str = f"&p={page}"
-            url =  self.track_url + page_str
+            print('Buscando na API')
+            scraper = cloudscraper.create_scraper(delay=10)
+            url = "https://www.pichau.com.br/api/pichau/"
             # print("Getting page", url)
-            resposta = scraper.get(url).content
-            base_url = self.track_url.split('/s')[0]
-            html = resposta
+            # resposta = scraper.post(url, json=self.body, headers=self.headers)
+            resposta = requests.post(url, json=body, headers=headers)
+            # print(resposta.content)
+            produtos = []
+            elementos_produto = {}
+            
+            try:
+                elementos_produto = json.loads(resposta.content)
+            except json.decoder.JSONDecodeError:
+                return {'produtos': produtos}
+
+            base_url = self.track_url.split('/api')[0]
 
             # Parseando o HTML com BeautifulSoup
-            soup = BeautifulSoup(html, 'html.parser')
-            produtos = []
-            elementos_produto = soup.find_all('div', class_='MuiGrid-item')  # Ajuste a classe conforme necessário
-
+              # Ajuste a classe conforme necessário
+            elementos_produto = elementos_produto['data']['products']['items']
             for produto in elementos_produto:
                 try:
-                    name = produto.find('h2').get_text(strip=True)
-                    previous_price = produto.find('s').get_text(strip=True)[3:].replace(',', '')
-                    discount_price = produto.find('div', class_='jss83').get_text(strip=True)[3:].replace(',', '')
-                    credit_info_div = produto.find('div', class_='jss109')
-                    credit_price = credit_info_div.find('div', class_='jss110').get_text(strip=True)[3:].replace(',', '')
-                    credit_info = credit_info_div.find('span', class_='jss112 jss113').get_text(strip=True)
-                    link = base_url + produto.find('a', class_='jss12')['href']
-
                     produtos.append({
-                        'name': name,
-                        'previous_price': float(previous_price),
-                        'discount_price': float(discount_price),
-                        'credit_price': float(credit_price),
-                        'credit_info': credit_info,
-                        'link': link,
-                        'image': "not_implemented"
+                        'name': produto['name'],
+                        'discount_price': round(produto['price_range']['minimum_price']['final_price']['value']*0.85, 2),
+                        'credit_price': produto['price_range']['minimum_price']['final_price']['value'],
+                        'link': base_url + '/' + produto['url_key'],
+                        'image': produto['small_image']['url']
                     })
                 except (AttributeError, TypeError) as e:
                     pass  # Ignorar erros e continuar o loop
@@ -144,7 +185,7 @@ class Pichau():
         for page in range(1, 2, 1):
             # print(f"page {page}")
             informacoes_produtos = self.get_products(page)
-            print(informacoes_produtos)
+            # print(informacoes_produtos)
             # print(informacoes_produtos)
             try:
                 prod['produtos'].extend(informacoes_produtos['produtos'])

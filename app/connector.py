@@ -16,10 +16,6 @@ class Connect():
     def post(self, json, endpoint):
         r = requests.post(self.api_host+endpoint, json=json, headers=self.headers, verify=False)
         return r.text()
-
-
-    def new_best_price(self, message):
-        r = requests.post(self.api_host+"/telegram/send_message", json=message, headers=self.headers, verify=False)
         
 
     def add_new_product(self, product):
@@ -28,6 +24,11 @@ class Connect():
 
     def get_products(self):
         r = requests.get(self.api_host+"/products", headers=self.headers, verify=False)
+        return r.json()
+    
+    
+    def get_products_by_id(self, id):
+        r = requests.get(self.api_host+f"/products/{id}", headers=self.headers, verify=False)
         return r.json()
     
     
@@ -50,4 +51,12 @@ class Connect():
         r = requests.post(self.api_host+"/prices", json=product_info, headers=self.headers)
         return r
     
+    def send_telegram_message(self, message):
+        r = requests.post(self.api_host+"/telegram/send_message", json=message, headers=self.headers)
+        return r
+    
+    def update_prices(self, product_info):
+        # print(product_info)
+        r = requests.put(self.api_host+f"/prices/{product_info['price_id']}", json=product_info, headers=self.headers)
+        return r
     

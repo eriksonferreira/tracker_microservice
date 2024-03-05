@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV API_HOST=host.docker.internal:8888
 
 # Run main.py when the container launches
-CMD ["python", "main.py"]
+CMD ["python", "-u", "main.py"]
