@@ -6,11 +6,11 @@ import random
 import requests
 from cache import add_or_update_cache
 # os.environ['API_HOST'] = "localhost:8888"
-api = Connect('http://' + os.environ['API_HOST'])
+api = Connect(os.environ['API_HOST'])
 print("Initiating tracker..")
 
 def initialize_cache():
-    products = requests.get('http://' + os.environ['API_HOST']+"/products?limit=999&offset=0")
+    products = requests.get(os.environ['API_HOST']+"/products?limit=999&offset=0")
     products = products.json()
     products = products['data']
     print(f"Gravando {len(products)} produtos no cache")
