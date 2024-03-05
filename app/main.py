@@ -5,7 +5,7 @@ import time
 import random
 import requests
 from cache import add_or_update_cache
-os.environ['API_HOST'] = "localhost:8888"
+# os.environ['API_HOST'] = "localhost:8888"
 api = Connect('http://' + os.environ['API_HOST'])
 print("Initiating tracker..")
 
