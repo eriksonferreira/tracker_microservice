@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Define environment variable for API endpoint
 # Use 'host.docker.internal' to refer to the host machine in Docker for Windows/Mac.
 # For Linux, you may need to use the host's IP address directly or configure the network.
-ENV API_HOST=host.docker.internal:8888
+ENV API_HOST=10.128.0.16
 
 # Run main.py when the container launches
 CMD ["python", "-u", "main.py"]
