@@ -129,7 +129,7 @@ class Pichau():
         headers = {
             'Host': 'www.pichau.com.br',
             'vendor': 'Pichau',
-            'Accept': '*/*',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
             'Content-Type': 'application/json',
             'User-Agent': 'PichauMobile/67 CFNetwork/1490.0.4 Darwin/23.2.0',
             'Accept-Language': 'pt-BR,pt;q=0.9',
@@ -143,8 +143,9 @@ class Pichau():
             url = "https://www.pichau.com.br/api/pichau/"
             # print("Getting page", url)
             # resposta = scraper.post(url, json=self.body, headers=self.headers)
-            resposta = requests.post(url, json=body, headers=headers)
-            # print(resposta.content)
+            resposta = scraper.post(url, json=body, headers=headers)
+            print(resposta)
+            # print(resposta.headers)
             produtos = []
             elementos_produto = {}
             
@@ -175,12 +176,12 @@ class Pichau():
             else:
                 # Espera por um tempo aleatório entre 5 e 10 segundos antes de tentar novamente
                 wait_time = random.randint(5, 10)
-                print(f"Nenhum produto encontrado, tentando novamente em {wait_time} segundos...")
+                # print(f"Nenhum produto encontrado, tentando novamente em {wait_time} segundos...")
                 time.sleep(wait_time)
     
 
     def get_all_pages(self):
-        print("Getting all products")
+        # print("Getting all products")
         prod = {'produtos': []}
         for page in range(1, 2, 1):
             # print(f"page {page}")
@@ -193,9 +194,9 @@ class Pichau():
                 pass
             wait_time = range(0, 10, 1)
             choosed_time = random.choice(wait_time)
-            print(F"Waiting for {choosed_time} seconds")
+            # print(F"Waiting for {choosed_time} seconds")
             time.sleep(choosed_time)
-        print("Done!")
+        # print("Done!")
         print(f"Found {len(prod['produtos'])} products.")
         
         return prod
@@ -205,7 +206,7 @@ class Pichau():
         products_cleansed = {'produtos': []}
         products = self.get_all_pages()
         # print(products)
-        print("Processing strings..")
+        # print("Processing strings..")
         for product in products['produtos']:
             try:
                 prod = self.extrair_itens(product)
@@ -213,6 +214,6 @@ class Pichau():
             except IndexError:
                 continue
 
-        print("Done!")
+        # print("Done!")
 
         return products_cleansed

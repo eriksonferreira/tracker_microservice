@@ -7,11 +7,11 @@ def add_or_update_cache(key, new_value):
     actual_value = cache.get(key)
     
     if actual_value is None:
-        print(f"Adicionando {key}: {new_value} ao cache.")
+        # print(f"Adicionando {key}: {new_value} ao cache.")
         cache[key] = new_value
         return True, None
     elif actual_value != new_value:
-        print(f"Atualizando {key} no cache de {actual_value} para {new_value}.")
+        # print(f"Atualizando {key} no cache de {actual_value} para {new_value}.")
         cache[key] = new_value
         return False, actual_value
     else:

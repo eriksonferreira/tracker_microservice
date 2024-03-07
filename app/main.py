@@ -5,7 +5,7 @@ import time
 import random
 import requests
 from cache import add_or_update_cache
-# os.environ['API_HOST'] = "localhost:8888"
+os.environ['API_HOST'] = "https://price-tracker-ugjo2rw7cq-uc.a.run.app/"
 api = Connect(os.environ['API_HOST'])
 print("Initiating tracker..")
 
@@ -13,7 +13,7 @@ def initialize_cache():
     products = requests.get(os.environ['API_HOST']+"/products?limit=999&offset=0")
     products = products.json()
     products = products['data']
-    print(f"Gravando {len(products)} produtos no cache")
+    # print(f"Gravando {len(products)} produtos no cache")
     # print(products)
    
     for product in products:
@@ -21,6 +21,21 @@ def initialize_cache():
             add_or_update_cache(product['sku'], product['prices'][0]['actual_price'])
         except IndexError:
             pass
+
+def get_update_time():
+    time = requests.get(os.environ['API_HOST']+"/stores/2")
+    time = time.json()
+    # print(time)
+    min_time = time['update_min_time']
+    max_time = time['update_max_time']
+    try:
+        if min_time is not None and max_time is not None:
+            return min_time, max_time
+        else:
+            return 360, 600
+    except IndexError:
+        return 360, 600
+
 
 def orquestrate():
     filtered = []
@@ -40,7 +55,7 @@ def orquestrate():
             filtered.append(product)
 
     if len(filtered) > 0:
-        print(f"Adding {len(filtered)} products to database..")
+        # print(f"Adding {len(filtered)} products to database..")
         if api is not None:
             for attempt in range(3):
                 try:
@@ -91,8 +106,10 @@ def orquestrate():
     print("----------------------------------------------")
     
 initialize_cache()
+
 while True:
-    intervalo = random.randint(5, 10)  # Gera um número aleatório entre 30 e 120 segundos
+    min_time, max_time = get_update_time()
+    intervalo = random.randint(min_time, max_time)  # Gera um número aleatório entre 30 e 120 segundos
     orquestrate()
     print(f"Waiting for {intervalo} seconds..")
     time.sleep(intervalo)  # Pausa a execução pelo número de segundos gerado

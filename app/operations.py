@@ -58,7 +58,7 @@ def add_products(api, products):
                         pass
                 else:
                     
-                    print("Error adding History", h_json)
+                    # print("Error adding History", h_json)
                     product_info_prices = {
                     'product_id': r_json['detail']['product_details']['id'],
                     'store_id': product['store_id'],

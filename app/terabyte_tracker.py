@@ -11,10 +11,10 @@ class Terabyte():
     def __init__(self, connector):
         store = None
         try:
-            print('Buscando base URL')
+            # print('Buscando base URL')
             store = connector.get_store_track_url(3)
             self.track_url = store['base_url']
-            print("Base URL: ", self.track_url)
+            # print("Base URL: ", self.track_url)
         except:
             print('Erro ao buscar base URL')
             self.track_url = "https://www.terabyteshop.com.br/hardware/placas-de-video/nvidia-geforce"
@@ -110,7 +110,7 @@ class Terabyte():
 
 
     def get_products(self, page=1):
-        print('Buscando na API')
+        # print('Buscando na API')
         scraper = cloudscraper.create_scraper()
         url = self.track_url
 
@@ -237,7 +237,7 @@ class Terabyte():
             else:
                 # Espera por um tempo aleatório entre 5 e 10 segundos antes de tentar novamente
                 wait_time = random.randint(5, 10)
-                print(f"Nenhum produto encontrado, tentando novamente em {wait_time} segundos...")
+                # print(f"Nenhum produto encontrado, tentando novamente em {wait_time} segundos...")
                 time.sleep(wait_time)
 
 

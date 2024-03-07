@@ -1,5 +1,5 @@
 import requests
-
+import time
 class Connect():
 
 
@@ -7,10 +7,17 @@ class Connect():
         # print(api_host)
         self.api_host = api_host
         self.headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        r = requests.get(api_host)
-        r = r.json()
-        print(f"{r['message']} - API initialized.")
-        pass
+        while True:
+            r = requests.get(api_host)
+            if r.status_code == 200:
+                r = r.json()
+                print(f"{r['message']} - API initialized.")
+                break
+            else:
+                print("API Offline, reconeting in 30 seconds..")
+                time.sleep(30)
+            
+    
 
 
     def post(self, json, endpoint):

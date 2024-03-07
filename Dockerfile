@@ -18,6 +18,8 @@ EXPOSE 8080
 # Use 'host.docker.internal' to refer to the host machine in Docker for Windows/Mac.
 # For Linux, you may need to use the host's IP address directly or configure the network.
 ENV API_HOST="https://price-tracker-ugjo2rw7cq-uc.a.run.app/"
+ENV PYTHONWARNINGS="ignore:Unverified HTTPS request"
+
 
 # Run main.py when the container launches
 CMD ["python", "-u", "main.py"]
