@@ -1,5 +1,6 @@
 from pichau_tracker import Pichau
 from terabyte_tracker import Terabyte
+from kabum_tracker import Kabum
 import time
 from history import check_history_price
 
@@ -12,6 +13,11 @@ def get_scrape_data(api, store_id):
         return products
     elif store['name'] == "TerabyteShop":
         terabyte = Terabyte(api)
+        products = terabyte.get_scrape_produts()
+        return products
+
+    elif store['name'] == "Kabum":
+        terabyte = Kabum(api)
         products = terabyte.get_scrape_produts()
         return products
 

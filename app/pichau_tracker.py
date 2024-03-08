@@ -144,7 +144,7 @@ class Pichau():
             # print("Getting page", url)
             # resposta = scraper.post(url, json=self.body, headers=self.headers)
             resposta = scraper.post(url, json=body, headers=headers)
-            print(resposta)
+            # print(resposta)
             # print(resposta.headers)
             produtos = []
             elementos_produto = {}
