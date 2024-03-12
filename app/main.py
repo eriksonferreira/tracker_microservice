@@ -6,6 +6,7 @@ import random
 import requests
 from cache import add_or_update_cache
 from get_products_externally import get_json_from_external_website
+import json
 
 os.environ['PYTHONWARNINGS'] = "ignore:Unverified HTTPS request"
 os.environ['API_HOST'] = "https://price-tracker-ugjo2rw7cq-uc.a.run.app/"
@@ -39,9 +40,10 @@ def get_update_time():
             return 360, 600
     except IndexError:
         return 360, 600
+    
 
+def get_pichau():
 
-def orquestrate():
     filtered = []
     print("----------------------------------------------")
     print("Getting products for Pichau..")
@@ -57,6 +59,9 @@ def orquestrate():
             #     print("NAO ERA CACHEADO")
 
             if old_price is not None and product['discount_price'] < old_price:
+                filtered.append(product)
+            
+            if old_price is not None and product['discount_price'] > old_price:
                 filtered.append(product)
 
         if len(filtered) > 0:
@@ -103,11 +108,12 @@ def orquestrate():
                         time.sleep(2)
         else:
             print("Prices not changed")        
-
-
     print("----------------------------------------------")
 
 
+def get_terabyte():
+
+    filtered = []
     print("Getting products for Terabyte..")
     try:
         products = get_scrape_data(api, 3)
@@ -127,6 +133,10 @@ def orquestrate():
 
             if old_price is not None and product['discount_price'] < old_price:
                 filtered.append(product)
+
+            if old_price is not None and product['discount_price'] > old_price:
+                filtered.append(product)
+
         
         if len(filtered) > 0:
             print(f"Adding {len(filtered)} products to database..")
@@ -144,6 +154,7 @@ def orquestrate():
     except:
         print("ERRO AO BUSCAR TERABYTE, BUSCANDO EXTERNAMENTE")
         products = get_json_from_external_website('Terabyte', api)
+        # print(products)
         del filtered
 
         filtered = []
@@ -172,12 +183,12 @@ def orquestrate():
                         time.sleep(2)
         else:
             print("Prices not changed")
-    
-
-
     print("----------------------------------------------")
 
 
+def get_kabum():
+
+    filtered = []
     print("Getting products for Kabum..")
 
     try:
@@ -198,6 +209,10 @@ def orquestrate():
 
             if old_price is not None and product['discount_price'] < old_price:
                 filtered.append(product)
+            
+            if old_price is not None and product['discount_price'] > old_price:
+                filtered.append(product)
+
         
         if len(filtered) > 0:
             print(f"Adding {len(filtered)} products to database..")
@@ -213,7 +228,7 @@ def orquestrate():
             print("Prices not changed")
         print("----------------------------------------------")
 
-    except:
+    except json.decoder.JSONDecodeError:
         print("ERRO AO BUSCAR TERABYTE, BUSCANDO EXTERNAMENTE")
         products = get_json_from_external_website('Kabum', api)
         del filtered
@@ -244,6 +259,20 @@ def orquestrate():
                         time.sleep(2)
         else:
             print("Prices not changed")
+
+
+def orquestrate():
+    get_pichau()
+    get_terabyte()
+    get_kabum()
+
+    
+    
+
+
+    
+
+    
     
 initialize_cache()
 

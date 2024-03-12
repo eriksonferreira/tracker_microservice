@@ -23,7 +23,7 @@ def get_json_from_external_website(store, api):
     for gpu in r:
         name = gpu['Modelo']
         price = gpu['ValorAV']
-        price_credit = gpu['ValorParc']
+        price_credit = gpu['ValorAV']*0.85 if store == 'Terabyte' else gpu['ValorParc']
         link = gpu['Link']
         imagem = ""
 
@@ -35,6 +35,8 @@ def get_json_from_external_website(store, api):
             'image': imagem
         }
 
+        products.append(product)
+
     products = {'produtos': products}
     products_cleansed = {'produtos': []}
     # print(products)
@@ -42,8 +44,10 @@ def get_json_from_external_website(store, api):
     for product in products['produtos']:
         try:
             prod = tracker.extrair_itens(product)
+            # print(prod)
             products_cleansed['produtos'].extend([prod])
-        except IndexError:
+        except IndexError as e:
+            # print(e)
             continue
 
     # print(products_cleansed)

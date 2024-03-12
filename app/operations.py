@@ -3,6 +3,7 @@ from terabyte_tracker import Terabyte
 from kabum_tracker import Kabum
 import time
 from history import check_history_price
+from tqdm import tqdm
 
 def get_scrape_data(api, store_id):
 
@@ -17,15 +18,15 @@ def get_scrape_data(api, store_id):
         return products
 
     elif store['name'] == "Kabum":
-        terabyte = Kabum(api)
-        products = terabyte.get_scrape_produts()
+        kabum = Kabum(api)
+        products = kabum.get_scrape_produts()
         return products
 
 def add_products(api, products):
-    for product in products:
-        # print(product)
+    for product in tqdm(products, desc="Adding products to database"):
+        print(f"Adding {product['sku']}")
         r = api.add_product(product)
-
+        print(f"Request response: {r.status_code}")
         r_json = r.json()
         # print(product)
         if r.status_code == 409:

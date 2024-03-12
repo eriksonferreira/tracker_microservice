@@ -3,14 +3,14 @@ from messages import new_best_price_str, new_best_credit_price_str, credit_price
 def check_history_price(product_info, connector):
     r = connector.get_products_by_id(product_info['product_id'])
     try:
-        if float(product_info['price']) < float(r['prices'][0]['actual_price']):
+        if round(float(product_info['price']), 2) < round(float(r['prices'][0]['actual_price']), 2):
             print('new_best_price')
             connector.send_telegram_message({
                 'image_url': product_info['other_info']['image'],
                 'text': new_best_price_str(product_info['other_info'], r)
             })
             return True, r
-        elif float(product_info['price']) > float(r['prices'][0]['actual_price']):
+        elif round(float(product_info['price']), 2) > round(float(r['prices'][0]['actual_price']), 2):
             print('price increased')
             connector.send_telegram_message({
                 'image_url': product_info['other_info']['image'],
@@ -21,14 +21,14 @@ def check_history_price(product_info, connector):
     except:
         pass
     try:
-        if float(product_info['price_credit']) < float(r['prices'][0]['actual_price_credit']):
+        if round(float(product_info['price_credit']), 2) < round(float(r['prices'][0]['actual_price_credit']), 2):
             print('new_best_credit_price')
             connector.send_telegram_message({
                 'image_url': product_info['other_info']['image'],
                 'text': new_best_credit_price_str(product_info['other_info'], r)
             })
             return True, r
-        elif float(product_info['price_credit']) > float(r['prices'][0]['actual_price_credit']):
+        elif round(float(product_info['price_credit']), 2) > round(float(r['prices'][0]['actual_price_credit']), 2):
             print('credit_price increased')
             connector.send_telegram_message({
                 'image_url': product_info['other_info']['image'],

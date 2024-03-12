@@ -29,20 +29,24 @@ class Kabum():
             memory_type = sep[1].split(' ')[-1]
             # print(memory, memory_type)
         except:
-            print('ERROR IN ', sep)
+            # print('ERROR IN ', sep)
             memory = ''
             memory_type = ''
             pass
-
+        
+        
         model_sep = sep[0].split('RTX')
         type_prod = model_sep[0]
         model = 'RTX' + model_sep[-1]
         sku_sep = sep[-1].split(' - ')
         sku = ''
-        if len(sku_sep[-1]) > 5:
-            sku = sku_sep[-1]
+        # print(product_name)
+        if len(sku_sep) > 1:
+            sku = sku_sep[-1]+"-"+str(product_name['id'])
+            # print(sku)
         else:
-            sku = sep[-1]
+            # print(sep[0])
+            sku = "kb_"+str(product_name['id'])
 
         
         final_dict = {
@@ -85,6 +89,7 @@ class Kabum():
         prods = []
         # print(quantidade)
         for prod in t['data']:
+            id = prod['id']
             name = prod['attributes']['title']
             credit_price = prod['attributes']['price']
             actual_price = prod['attributes']['price_with_discount']
@@ -92,6 +97,7 @@ class Kabum():
             image = prod['attributes']['photos']['g'][0]
             manufacturer = prod['attributes']['manufacturer']['name']
             product = {
+                'id': id,
                 'name': name,
                 'discount_price': actual_price,
                 'credit_price': credit_price,
