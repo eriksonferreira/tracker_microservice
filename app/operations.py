@@ -53,6 +53,7 @@ def add_products(api, products):
                     'store_id': product['store_id'],
                     'actual_price': product['discount_price'],
                     'actual_price_credit': product['credit_price'],
+                    'actual_price_id': h_json['id'],
                     'all_time_low': h_json['id'],
                     'price_id': price_id
                     }
@@ -74,8 +75,6 @@ def add_products(api, products):
                     'price_id': price_id
                     }
                     p = api.update_prices(product_info_prices)
-                    # print(p.content)
-                    p_json = p.json()
                     if p.status_code == 200:
                         pass
                     else:
@@ -101,22 +100,23 @@ def add_products(api, products):
             h = api.add_history(product_info)
             h_json = h.json()
             if h.status_code == 200:
-                pass
-                # print("Price added successfuly")
-            else:
-                pass
-                # print("Error adding Price", p_json)
-            product_info_prices = {
+                product_info_prices = {
                 'product_id': r_json['id'],
                 'store_id': product['store_id'],
                 'actual_price': product['discount_price'],
                 'actual_price_credit': product['credit_price'],
+                'actual_price_id': h_json['id'],
                 'all_time_low': h_json['id']
-            }
-            p = api.add_prices(product_info_prices)
-            if p.status_code == 200:
-                pass
-                # print("Price added successfuly")
+            }   
+                p = api.add_prices(product_info_prices)
+
+                if p.status_code == 200:
+                    pass
+                    # print("Price added successfuly")
+                else:
+                    pass
+                    # print("Error adding Price", p_json)
             else:
                 pass
                 # print("Error adding Price", p_json)
+            
