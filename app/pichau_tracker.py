@@ -58,7 +58,7 @@ class Pichau():
                 'memory': final[3],
                 'memory_type': final[4],
                 'memory_bus': final[5],
-                'sku': final[6],
+                'sku': final[6]+'-'+product['id'],
                 'discount_price': product['discount_price'],
                 'credit_price': product['credit_price'],
                 'link': product['link'],
@@ -86,7 +86,7 @@ class Pichau():
                 'memory': final[2],
                 'memory_type': final[3],
                 'memory_bus': final[4],
-                'sku': final[5],
+                'sku': final[5]+'-'+product['id'],
                 'discount_price': product['discount_price'],
                 'credit_price': product['credit_price'],
                 'link': product['link'],
@@ -162,6 +162,7 @@ class Pichau():
             for produto in elementos_produto:
                 try:
                     produtos.append({
+                        'id': produto['id'],
                         'name': produto['name'],
                         'discount_price': round(produto['price_range']['minimum_price']['final_price']['value']*0.85, 2),
                         'credit_price': produto['price_range']['minimum_price']['final_price']['value'],
