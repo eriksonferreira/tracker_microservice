@@ -33,7 +33,7 @@ def price_increased(product, old):
 
 def credit_price_increased(product, old):
     text_message = f"""
-    Preço aumentou :(
+    Preço no crédito aumentou :(
     {product['type']} {product['manufacturer']} {product['model']} {product['memory']}
     Preço antigo: R${old['prices'][0]['actual_price']}
     Preço atual: R${product['discount_price']}
