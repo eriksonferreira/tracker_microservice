@@ -13,8 +13,8 @@ def new_best_credit_price_str(product, old):
     text_message = f"""
     Novo melhor preço no crédito encontrado!
     {product['type']} {product['manufacturer']} {product['model']} {product['memory']}
-    Preço antigo: R${old['prices'][0]['actual_price']}
-    Preço atual: R${product['discount_price']}
+    Preço antigo: R${old['prices'][0]['actual_price_credit']}
+    Preço atual: R${product['credit_price']}
     Preço no crédito: 12x{round((product['credit_price']/12), 2)}
     Link: {product['link']}
 """
@@ -35,8 +35,8 @@ def credit_price_increased(product, old):
     text_message = f"""
     Preço no crédito aumentou :(
     {product['type']} {product['manufacturer']} {product['model']} {product['memory']}
-    Preço antigo: R${old['prices'][0]['actual_price']}
-    Preço atual: R${product['discount_price']}
+    Preço antigo: R${old['prices'][0]['actual_price_credit']}
+    Preço atual: R${product['credit_price']}
     Preço no crédito: 12x{round((product['credit_price']/12), 2)}
     Link: {product['link']}
 """
