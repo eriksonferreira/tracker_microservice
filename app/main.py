@@ -262,9 +262,21 @@ def get_kabum():
 
 
 def orquestrate():
-    get_pichau()
-    get_terabyte()
-    get_kabum()
+    try: 
+        get_pichau()
+    except:
+        print("Error getting pichau")
+
+    try: 
+        get_terabyte()
+    except:
+        print("Error getting terabyte")
+
+    try: 
+        get_kabum()
+    except:
+        print("Error getting kabum")
+
 
     
     
@@ -278,7 +290,7 @@ initialize_cache()
 
 while True:
     min_time, max_time = get_update_time()
-    intervalo = random.randint(min_time, max_time)  # Gera um número aleatório entre 30 e 120 segundos
+    intervalo = random.randint(min_time, max_time)  # Gera um número aleatório entre x e y segundos obtidos via API
     orquestrate()
     print(f"Waiting for {intervalo} seconds..")
     time.sleep(intervalo)  # Pausa a execução pelo número de segundos gerado
